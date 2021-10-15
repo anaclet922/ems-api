@@ -386,7 +386,7 @@ class Employee extends BaseController
                     'message' => 'Employees added successfully',
                     'Errors' => $errors
                 ],
-                ResponseInterface::HTTP_BAD_REQUEST
+                ResponseInterface::HTTP_OK
             ); 
 
         } catch (Exception $exception) {
