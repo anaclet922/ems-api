@@ -29,3 +29,5 @@
 Open `.env` and edit:
  - baseURL and change database settings (e.g.: example.com); this url should point to /public folder where index.php located.
  - change secret key for JWT to strong one, and JWT_TIME_TO_LIVE.
+
+### Excel Template is found to root folder named employee_template.xlsx

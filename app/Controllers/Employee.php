@@ -381,6 +381,8 @@ class Employee extends BaseController
                     array_push($errors, $i);
                 }
             }
+            unlink(WRITEPATH . 'uploads/' . $data['name']);
+            
             return $this->getResponse(
                 [
                     'message' => 'Employees added successfully',
