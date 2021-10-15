@@ -51,3 +51,6 @@ Open `.env` and edit:
 
 ### API Documentation
 - View doc online ([https://documenter.getpostman.com/view/8641230/UV5UidmJ](https://documenter.getpostman.com/view/8641230/UV5UidmJ)).
+- In documentation replace http:locahost:8080 to your baseURL while consuming API.
+
+
