@@ -45,6 +45,8 @@ $routes->get('change-status-employee/(:num)/(:any)', 'Employee::updateStatus/$1/
 
 $routes->get('search', 'Employee::search');
 
+$routes->post('bulk-upload', 'Employee::bulk_upload');
+
 //verification route
 $routes->get('verify-email/(:any)', 'Auth::verify/$1');
 

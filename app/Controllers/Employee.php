@@ -66,6 +66,7 @@ class Employee extends BaseController
         
         $model->save($input);
         
+        $e = $this->sendEmail($input);
 
         $employee = $model->where('Email', $employeeEmail)->first();
 
@@ -73,7 +74,8 @@ class Employee extends BaseController
             [
                 'message' => 'Employee added successfully',
                 'employee' => $employee
-            ]
+            ],
+            ResponseInterface::HTTP_OK
         );
     }
 
@@ -85,8 +87,7 @@ class Employee extends BaseController
         $email->setTo($to);
         $email->setFrom('task@anaclet.online', 'Confirm Registration');
 
-        $subject = 'Email verification';
-        $href = base_url('verify-email/' . $verify['VerificationCode']);
+        $subject = 'Confirm Registration';
         
         $message = '<h4>Welcome!</h4>';
         $message .= '<p>Hello ' . $input['Name'] . ', You have registered EMS as employee.</p>';
@@ -286,4 +287,117 @@ class Employee extends BaseController
         );
     }
 
+     public function store_employee($input)//store new employee
+    {
+       $rules = [
+                'Name' => 'required',
+                'NID' => 'required|max_length[16]|numeric',
+                'Phone' => 'required|numeric|min_length[9]|max_length[9]|validatePhone[Phone]',
+                'Email' => 'required|min_length[6]|max_length[50]|valid_email|is_unique[tbl_employees.Email]',
+                'DateOfBirth' => 'required|valid_date[d/m/Y]|is_mature[DateOfBirth]'
+            ];
+
+        // $input = $this->getRequestInput($this->request);
+
+        $errors = [
+            'Phone' => [
+                'validatePhone' => 'The Phone field must start with 78, 79, 72 or 73'
+            ],
+            'DateOfBirth' => [
+                'is_mature' => 'Employee must be above 18 years old or above.'
+            ]
+        ];
+
+        if (!$this->validateRequest($input, $rules, $errors)) {
+            return  $this->validator->getErrors();
+        }
+
+        $employeeEmail = $input['Email'];
+
+        $input['ManagerId'] = getManagerFromToken()['Id'];
+
+        $model = new EmployeeModel();
+
+        $input['CODE'] = $model->generateEmployeeCode();
+        
+        $model->save($input);
+        
+        $e = $this->sendEmail($input);
+
+        $employee = $model->where('Email', $employeeEmail)->first();
+
+        return true;
+    }
+
+    public function bulk_upload(){
+
+        try{
+
+            helper(['form', 'url']);
+
+            $input = $this->validate([
+                'List' => [
+                    'uploaded[List]',
+                    'mime_in[List,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet]',
+                    'max_size[List,99999]',
+                ]
+            ]);
+        
+            if (!$input) {
+                 return $this
+                    ->getResponse(
+                        ['Error' => 'Choose a valid file'],
+                        ResponseInterface::HTTP_BAD_REQUEST
+                    );
+            }else {
+                $img = $this->request->getFile('List');
+                $img->move(WRITEPATH . 'uploads');
+        
+                $data = [
+                   'name' =>  $img->getName(),
+                   'type'  => $img->getClientMimeType()
+                ];
+            }
+
+            $errors = array();
+            $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load(WRITEPATH . 'uploads/' . $data['name']);
+
+            $list = $spreadsheet->getActiveSheet()->toArray();
+            unset($list[0]);
+            foreach ($list as $employee) {
+                $input = array(
+                    'Name' => $employee[1],
+                    'NID' => $employee[2],
+                    'Phone' => $employee[3],
+                    'Email' => $employee[4],
+                    'DateOfBirth' => $employee[5],
+                    'Position' => $employee[6]
+                );
+                $i = $this->store_employee($input);
+                if(is_array($i)){
+                    $i['Record No'] = $employee[0];
+                    array_push($errors, $i);
+                }
+            }
+            return $this->getResponse(
+                [
+                    'message' => 'Employees added successfully',
+                    'Errors' => $errors
+                ],
+                ResponseInterface::HTTP_BAD_REQUEST
+            ); 
+
+        } catch (Exception $exception) {
+
+            return $this->getResponse(
+                [
+                    'message' => $exception->getMessage(),
+                    'Errors' => $errors
+                ],
+                ResponseInterface::HTTP_BAD_REQUEST
+            );
+        }
+    }
 }
