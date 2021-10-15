@@ -27,10 +27,16 @@
 ### Setup
 
 Open `.env` and edit:
- - baseURL and change database settings (e.g.: example.com); this url should point to /public folder where index.php located.
+ - baseURL and change database settings (e.g.: example.com); this url should point to /public folder where index.php located
  - change secret key for JWT to strong one, and JWT_TIME_TO_LIVE.
+
+### Database
+- Create database and edit `.env` file with database name and its user (You could have done on above step).
+- Run `php spark migrate` to migrate tables of our database.
+- Run `php spark db:seed EmployeeSeeder` to insert fake employee to employees table.
 
 ### Excel Template
 
 - Named employee_template.xlsx
 - Use the same template to upload bulk of employees to the system.
+
