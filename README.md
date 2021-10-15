@@ -48,3 +48,6 @@ Open `.env` and edit:
 	- `public $SMTPUser`, user for the SMTP
 	- `public $SMTPPass`, password for user
 	- `public $SMTPPort`, port for smtp
+
+### API Documentation
+- View doc online ([https://documenter.getpostman.com/view/8641230/UV5UidmJ](https://documenter.getpostman.com/view/8641230/UV5UidmJ)).
