@@ -40,3 +40,11 @@ Open `.env` and edit:
 - Named employee_template.xlsx
 - Use the same template to upload bulk of employees to the system.
 
+### Mail setup
+
+- Open /app/config/Email.php
+- Edit:
+	- `public $SMTPHost` to SMTP host
+	- `public $SMTPUser`, user for the SMTP
+	- `public $SMTPPass`, password for user
+	- `public $SMTPPort`, port for smtp

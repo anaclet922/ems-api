@@ -47,21 +47,21 @@ class Email extends BaseConfig
      *
      * @var string
      */
-    public $SMTPHost = 'mail.anaclet.online';
+    public $SMTPHost = '';
 
     /**
      * SMTP Username
      *
      * @var string
      */
-    public $SMTPUser = 'task@anaclet.online';
+    public $SMTPUser = '';
 
     /**
      * SMTP Password
      *
      * @var string
      */
-    public $SMTPPass = 'ZSVGmN2E8tM$';
+    public $SMTPPass = '';
 
     /**
      * SMTP Port
